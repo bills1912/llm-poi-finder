@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HeyPico Maps LLM - Location Finder</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <svg class="logo-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" fill="currentColor"/>
+                    <circle cx="12" cy="9" r="2.5" fill="white"/>
+                </svg>
+                <span class="logo-text">HeyPico Maps</span>
+            </div>
+            <div class="header-status">
+                <span id="llm-status" class="status-badge status-checking">
+                    <span class="status-dot"></span>
+                    Checking LLM...
+                </span>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Chat Panel -->
+            <aside class="chat-panel">
+                <div class="chat-header">
+                    <h2>Ask about places</h2>
+                    <p>Find restaurants, cafes, attractions, and more</p>
+                </div>
+
+                <!-- Chat Messages -->
+                <div class="chat-messages" id="chat-messages">
+                    <div class="message assistant">
+                        <div class="message-avatar">🤖</div>
+                        <div class="message-content">
+                            <p>Hi! I'm your location assistant. Ask me anything like:</p>
+                            <ul class="suggestions">
+                                <li onclick="sendSuggestion(this)">Where can I find good sushi nearby?</li>
+                                <li onclick="sendSuggestion(this)">Best coffee shops in the area</li>
+                                <li onclick="sendSuggestion(this)">Find parking near me</li>
+                                <li onclick="sendSuggestion(this)">Italian restaurants downtown</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Chat Input -->
+                <div class="chat-input-container">
+                    <div class="location-toggle">
+                        <input type="checkbox" id="use-location" checked>
+                        <label for="use-location">Use my location</label>
+                    </div>
+                    <form class="chat-form" id="chat-form">
+                        <input 
+                            type="text" 
+                            id="chat-input" 
+                            placeholder="Ask about places to go..." 
+                            autocomplete="off"
+                            required
+                        >
+                        <button type="submit" id="send-btn" aria-label="Send message">
+                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" fill="currentColor"/>
+                            </svg>
+                        </button>
+                    </form>
+                </div>
+            </aside>
+
+            <!-- Map Panel -->
+            <section class="map-panel">
+                <div id="map" class="map-container"></div>
+                
+                <!-- Place Details Modal -->
+                <div class="place-details" id="place-details">
+                    <button class="close-details" onclick="closePlaceDetails()" aria-label="Close">×</button>
+                    <div class="place-details-content" id="place-details-content">
+                        <!-- Content loaded dynamically -->
+                    </div>
+                </div>
+
+                <!-- Results List -->
+                <div class="results-panel" id="results-panel">
+                    <div class="results-header">
+                        <h3>Results</h3>
+                        <div class="results-header-actions">
+                            <span class="results-count" id="results-count">0 places</span>
+                            <button class="toggle-results-btn" id="toggle-results" onclick="toggleResultsPanel()" title="Hide results">
+                                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="results-list" id="results-list">
+                        <!-- Results loaded dynamically -->
+                    </div>
+                </div>
+
+                <!-- Collapsed Results Button (shown when panel is hidden) -->
+                <button class="results-collapsed-btn" id="results-collapsed-btn" onclick="toggleResultsPanel()" title="Show results">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                    <span id="collapsed-count">0</span>
+                </button>
+            </section>
+        </main>
+
+        <!-- Loading Overlay -->
+        <div class="loading-overlay" id="loading-overlay">
+            <div class="loading-spinner"></div>
+            <p>Searching for places...</p>
+        </div>
+    </div>
+
+    <!-- Google Maps Script (loaded dynamically) -->
+    <script src="app.js"></script>
+</body>
+</html>

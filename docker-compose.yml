@@ -1,0 +1,54 @@
+# HeyPico Maps LLM - Docker Compose Configuration
+# Run with: docker-compose up --build
+
+version: '3.8'
+
+services:
+  # Backend API Service
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: heypico-maps-backend
+    ports:
+      - "8000:8000"
+    environment:
+      - DEBUG=false
+      - ENVIRONMENT=production
+      - HOST=0.0.0.0
+      - PORT=8000
+      - ALLOWED_ORIGINS=http://localhost:3000,http://127.0.0.1:3000,http://localhost:8080
+      - GOOGLE_MAPS_API_KEY=${GOOGLE_MAPS_API_KEY}
+      - GOOGLE_MAPS_FRONTEND_KEY=${GOOGLE_MAPS_FRONTEND_KEY:-}
+      - OLLAMA_BASE_URL=http://host.docker.internal:11434
+      - LLM_MODEL=${LLM_MODEL:-llama3.2}
+      - RATE_LIMIT_REQUESTS=100
+      - RATE_LIMIT_WINDOW=3600
+      - DAILY_QUOTA_LIMIT=1000
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+  # Frontend Web Server
+  frontend:
+    image: nginx:alpine
+    container_name: heypico-maps-frontend
+    ports:
+      - "3000:80"
+    volumes:
+      - ./frontend:/usr/share/nginx/html:ro
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+# Networks
+networks:
+  default:
+    name: heypico-maps-network

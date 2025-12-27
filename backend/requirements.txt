@@ -1,0 +1,34 @@
+# HeyPico Maps LLM - Python Dependencies
+# Install with: pip install -r requirements.txt
+
+# Web Framework
+fastapi
+uvicorn[standard]
+starlette
+
+# HTTP Client for API calls
+httpx
+
+# Data Validation
+pydantic
+pydantic-settings
+
+# Environment Variables
+python-dotenv
+
+# Testing
+pytest
+pytest-asyncio
+pytest-cov
+httpx # Also used for test client
+
+# Development
+black
+isort
+flake8
+
+# Security
+python-multipart
+
+# Optional: For production deployment
+# gunicorn==21.2.0
