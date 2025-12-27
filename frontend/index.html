@@ -80,6 +80,17 @@
             <section class="map-panel">
                 <div id="map" class="map-container"></div>
                 
+                <!-- Toggle Button for Results Sidebar (Always visible) -->
+                <button class="sidebar-toggle-btn" id="sidebar-toggle" onclick="toggleResultsSidebar()" title="Toggle results">
+                    <svg class="icon-open" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <svg class="icon-close" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <span class="toggle-badge" id="toggle-badge">0</span>
+                </button>
+                
                 <!-- Place Details Modal -->
                 <div class="place-details" id="place-details">
                     <button class="close-details" onclick="closePlaceDetails()" aria-label="Close">×</button>
@@ -87,33 +98,18 @@
                         <!-- Content loaded dynamically -->
                     </div>
                 </div>
-
-                <!-- Results List -->
-                <div class="results-panel" id="results-panel">
-                    <div class="results-header">
-                        <h3>Results</h3>
-                        <div class="results-header-actions">
-                            <span class="results-count" id="results-count">0 places</span>
-                            <button class="toggle-results-btn" id="toggle-results" onclick="toggleResultsPanel()" title="Hide results">
-                                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="results-list" id="results-list">
-                        <!-- Results loaded dynamically -->
-                    </div>
-                </div>
-
-                <!-- Collapsed Results Button (shown when panel is hidden) -->
-                <button class="results-collapsed-btn" id="results-collapsed-btn" onclick="toggleResultsPanel()" title="Show results">
-                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                    </svg>
-                    <span id="collapsed-count">0</span>
-                </button>
             </section>
+
+            <!-- Results Sidebar (Slide from right) -->
+            <aside class="results-sidebar" id="results-sidebar">
+                <div class="results-sidebar-header">
+                    <h3>Results</h3>
+                    <span class="results-count" id="results-count">0 places</span>
+                </div>
+                <div class="results-list" id="results-list">
+                    <!-- Results loaded dynamically -->
+                </div>
+            </aside>
         </main>
 
         <!-- Loading Overlay -->

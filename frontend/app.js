@@ -34,9 +34,8 @@ const elements = {
     sendBtn: document.getElementById('send-btn'),
     useLocation: document.getElementById('use-location'),
     llmStatus: document.getElementById('llm-status'),
-    resultsPanel: document.getElementById('results-panel'),
-    resultsList: document.getElementById('results-list'),
-    resultsCount: document.getElementById('results-count'),
+    resultsCount: null, // Will be set after DOM load
+    resultsList: null,  // Will be set after DOM load
     placeDetails: document.getElementById('place-details'),
     placeDetailsContent: document.getElementById('place-details-content'),
     loadingOverlay: document.getElementById('loading-overlay'),
@@ -49,6 +48,10 @@ const elements = {
 
 async function init() {
     console.log('Initializing HeyPico Maps LLM...');
+    
+    // Set elements that might not be available immediately
+    elements.resultsCount = document.getElementById('results-count');
+    elements.resultsList = document.getElementById('results-list');
     
     // Set up event listeners
     setupEventListeners();
@@ -514,37 +517,40 @@ function sendSuggestion(element) {
 }
 
 // ==========================================
-// Results Panel Functions
+// Results Sidebar Functions
 // ==========================================
 
-let isResultsPanelVisible = true;
+let isSidebarVisible = true;
 
-function toggleResultsPanel() {
-    isResultsPanelVisible = !isResultsPanelVisible;
+function toggleResultsSidebar() {
+    isSidebarVisible = !isSidebarVisible;
     
-    const resultsPanel = elements.resultsPanel;
-    const collapsedBtn = document.getElementById('results-collapsed-btn');
+    const sidebar = document.getElementById('results-sidebar');
+    const toggleBtn = document.getElementById('sidebar-toggle');
     
-    if (isResultsPanelVisible) {
-        resultsPanel.classList.remove('hidden');
-        resultsPanel.classList.add('visible');
-        collapsedBtn.classList.remove('visible');
+    if (isSidebarVisible) {
+        sidebar.classList.remove('hidden');
+        toggleBtn.classList.remove('sidebar-closed');
     } else {
-        resultsPanel.classList.add('hidden');
-        resultsPanel.classList.remove('visible');
-        collapsedBtn.classList.add('visible');
+        sidebar.classList.add('hidden');
+        toggleBtn.classList.add('sidebar-closed');
     }
 }
 
 function showResultsPanel(places) {
+    const sidebar = document.getElementById('results-sidebar');
+    const toggleBtn = document.getElementById('sidebar-toggle');
+    const toggleBadge = document.getElementById('toggle-badge');
+    
     elements.resultsCount.textContent = `${places.length} places`;
-    document.getElementById('collapsed-count').textContent = places.length;
+    toggleBadge.textContent = places.length;
     elements.resultsList.innerHTML = '';
     
-    // Reset to visible state when new results come in
-    isResultsPanelVisible = true;
-    elements.resultsPanel.classList.remove('hidden');
-    document.getElementById('results-collapsed-btn').classList.remove('visible');
+    // Show sidebar when new results come in
+    isSidebarVisible = true;
+    sidebar.classList.remove('hidden');
+    toggleBtn.classList.remove('sidebar-closed');
+    toggleBtn.classList.add('has-results');
     
     places.forEach((place, index) => {
         const item = document.createElement('div');
@@ -586,10 +592,12 @@ function showResultsPanel(places) {
 }
 
 function hideResultsPanel() {
-    elements.resultsPanel.classList.remove('visible');
-    elements.resultsPanel.classList.add('hidden');
-    document.getElementById('results-collapsed-btn').classList.remove('visible');
-    isResultsPanelVisible = true; // Reset state
+    const sidebar = document.getElementById('results-sidebar');
+    const toggleBtn = document.getElementById('sidebar-toggle');
+    
+    sidebar.classList.add('hidden');
+    toggleBtn.classList.remove('has-results');
+    isSidebarVisible = false;
 }
 
 function selectPlace(place) {
@@ -738,7 +746,7 @@ window.sendSuggestion = sendSuggestion;
 window.showPlaceDetails = showPlaceDetails;
 window.closePlaceDetails = closePlaceDetails;
 window.showDirections = showDirections;
-window.toggleResultsPanel = toggleResultsPanel;
+window.toggleResultsSidebar = toggleResultsSidebar;
 
 // Initialize on DOM ready
 document.addEventListener('DOMContentLoaded', init);
